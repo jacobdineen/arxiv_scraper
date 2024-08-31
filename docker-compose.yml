@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: jdineen
+      POSTGRES_PASSWORD: Jake8579!
+      POSTGRES_DB: papers_db
+    ports:
+      - "5433:5432"  # Ensure you're using an available host port
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+    environment:
+      - OPENAI_API_KEY=sk-mARmwYQG6RZnzkFl1CfDabyzHIjRRCm0R33a7y51twT3BlbkFJBC4CGACq_PABYl9JgNMnwoOp_7hfPSoIckHm6OUIoA
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    links:
+      - db  # Ensure the app links to the db service
+
+volumes:
+  postgres_data:

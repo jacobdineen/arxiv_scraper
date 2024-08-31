@@ -1,0 +1,7 @@
+# ignore any .log files
+*.log
+config.env
+# ignore __pycache__ like files
+__pycache__/arxiv_client.cpython-310.pyc
+
+google_credentials.json
