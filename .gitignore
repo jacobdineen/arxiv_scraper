@@ -5,3 +5,5 @@ config.env
 __pycache__/arxiv_client.cpython-310.pyc
 
 google_credentials.json
+__pycache__/google_sheets_manager.cpython-310.pyc
+__pycache__/

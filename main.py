@@ -10,7 +10,7 @@ load_dotenv('config.env')
 
 def main():
     # Initialize clients
-    arxiv_client = ArxivClient(search_query="alignment safety", max_results=10)
+    arxiv_client = ArxivClient(search_query="reasoning", max_results=3)
     openai_client = OpenAIClient(api_key=os.getenv("OPENAI_API_KEY"))
     db_manager = DatabaseManager(
         db_name=os.getenv("DB_NAME"),
@@ -39,7 +39,12 @@ def main():
             print(f"Paper '{paper['title']}' already exists in the database.")
             continue
 
-        summary = openai_client.summarize_paper(paper['title'], paper['link'])
+        # Extract the actual content of the paper from the PDF URL
+        pdf_url = paper['link'].replace('abs', 'pdf') + ".pdf"  # Convert to direct PDF URL
+        paper_text = openai_client.extract_text_from_pdf_url(pdf_url)
+
+        # Summarize the paper using the actual text content
+        summary = openai_client.summarize_paper(paper['title'], paper_text)
         paper['summary'] = summary
         db_manager.save_paper(paper)
         print(f"Title: {paper['title']}\nLink: {paper['link']}\nPublication Date: {paper['publication_date']}\nSummary: {paper['summary']}\n")
