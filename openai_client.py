@@ -1,6 +1,6 @@
 import requests
+import fitz  # PyMuPDF
 from io import BytesIO
-from pdfminer.high_level import extract_text
 from openai import OpenAI
 
 class OpenAIClient:
@@ -11,17 +11,23 @@ class OpenAIClient:
         # Fetch the PDF file from the URL
         response = requests.get(pdf_url)
         response.raise_for_status()  # Ensure the request was successful
-        
+
         # Use BytesIO to read the PDF from memory
         pdf_file = BytesIO(response.content)
 
-        # Extract text from the PDF using pdfminer.six
-        text = extract_text(pdf_file)
+        # Open the PDF with PyMuPDF
+        document = fitz.open(stream=pdf_file, filetype="pdf")
 
+        # Extract text from each page
+        text = ""
+        for page_num in range(document.page_count):
+            page = document[page_num]
+            text += page.get_text()
+
+        document.close()
         return text
 
     def summarize_paper(self, title, paper_text):
-        print(f"Extracted text from PDF:\n{paper_text}")
         # Create a structured prompt with the extracted text
         prompt = (
             f"Summarize the following paper in the format below:\n"
