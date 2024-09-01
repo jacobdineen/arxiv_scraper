@@ -21,6 +21,7 @@ class OpenAIClient:
         return text
 
     def summarize_paper(self, title, paper_text):
+        print(f"Extracted text from PDF:\n{paper_text}")
         # Create a structured prompt with the extracted text
         prompt = (
             f"Summarize the following paper in the format below:\n"
